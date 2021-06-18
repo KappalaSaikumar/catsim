@@ -257,3 +257,127 @@ class DifferentialEvolutionEstimator(Estimator):
         self._evaluations = res.nfev
 
         return res.x[0]
+    
+class MathematicalModel(Estimator):
+
+    def __str__(self):
+        return 'Mathematical Model'
+
+    def __init__(self, bounds: tuple):
+        super(DifferentialEvolutionEstimator, self).__init__()
+        self._lower_bound = min(bounds)
+        self._upper_bound = max(bounds)
+        self._evaluations = 0
+        self._calls = 0
+
+    @property
+    def calls(self):
+        """How many times the estimator has been called to maximize/minimize the log-likelihood function
+
+        :returns: number of times the estimator has been called to maximize/minimize the log-likelihood function"""
+        return self._calls
+
+    @property
+    def evaluations(self):
+        """Total number of times the estimator has evaluated the log-likelihood function during its existence
+
+        :returns: number of function evaluations"""
+        return self._evaluations
+
+    @property
+    def avg_evaluations(self):
+        """Average number of function evaluations for all tests the estimator has been used
+
+        :returns: average number of function evaluations"""
+        return self._evaluations / self._calls
+
+    def estimate(
+        self,
+        index: int = None,
+        items: numpy.ndarray = None,
+        administered_items: list = None,
+        response_vector: list = None,
+        current_level: float = None,
+        ques_level: float = None,
+        correctness: boolean = None, 
+        max_time: int = None, 
+        time_taken: int = None, 
+        aplha: float = None, 
+        beta: float = None,
+        **kwargs
+    ) -> float:
+        
+        items, administered_items, response_vector, current_level,ques_level, correctness, max_time, time_taken, aplha, beta = \
+            self._prepare_args(
+                return_items=True,
+                return_response_vector=True,
+                index=index,
+                items=items,
+                administered_items=administered_items,
+                response_vector=response_vector,
+                current_level=current_level,ques_level=ques_level, correctness=correctness, max_time=max_time, time_taken=time_taken, aplha=aplha, beta=beta,
+                **kwargs
+            )
+
+        assert response_vector is not None
+        assert items is not None
+        assert administered_items is not None
+        assert current_level is not None
+        assert ques_level is not None
+        assert correctness is not None
+        assert max_time is not None
+        assert time_taken is not None
+        assert aplha is not None
+        assert beta is not None
+
+        self._calls += 1
+
+        level= current_level
+
+
+    #if (int(current_level) == (init_level +1)):
+     #   question_num =0
+      #  init_level = int(current_level) 
+        #question_num+=1
+        
+    
+    correct_marks =0
+    time_marks = 0
+    update=0
+    
+    
+    if correctness==0:
+        pass
+
+    else:
+        
+        g=(5-level)/5
+        #Correctness marks
+        if correctness==1:
+          val=ques_level
+          modval=val
+        else:
+          val=ques_level-6
+          modval=-val
+        
+        alp= alpha*(val*(np.sqrt(np.exp((val**2)/37)-1)/5))
+        correct_marks =g*alp
+
+
+
+        #Time marks
+        
+        time_marks = g* beta *(np.exp(-time_taken/(max_time*modval)))
+        if val>0:
+          update=correct_marks+ time_marks
+        else:
+          update=correct_marks- time_marks
+        level+=update
+
+    if level < 0.0:
+        level=0.0
+    elif level >= 4.99:
+        level=4.99
+
+        return level
+
