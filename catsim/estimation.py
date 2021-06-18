@@ -334,50 +334,42 @@ class MathematicalModel(Estimator):
 
         level= current_level
 
+        correct_marks =0
+        time_marks = 0
+        update=0
+    
+    
+        if correctness==0:
+            pass
 
-    #if (int(current_level) == (init_level +1)):
-     #   question_num =0
-      #  init_level = int(current_level) 
-        #question_num+=1
-        
-    
-    correct_marks =0
-    time_marks = 0
-    update=0
-    
-    
-    if correctness==0:
-        pass
-
-    else:
-        
-        g=(5-level)/5
-        #Correctness marks
-        if correctness==1:
-          val=ques_level
-          modval=val
         else:
-          val=ques_level-6
-          modval=-val
         
-        alp= alpha*(val*(np.sqrt(np.exp((val**2)/37)-1)/5))
-        correct_marks =g*alp
+            g=(5-level)/5
+        #Correctness marks
+            if correctness==1:
+              val=ques_level
+              modval=val
+            else:
+              val=ques_level-6
+              modval=-val
+        
+            alp= alpha*(val*(np.sqrt(np.exp((val**2)/37)-1)/5))
+            correct_marks =g*alp
 
 
 
         #Time marks
         
-        time_marks = g* beta *(np.exp(-time_taken/(max_time*modval)))
-        if val>0:
-          update=correct_marks+ time_marks
-        else:
-          update=correct_marks- time_marks
-        level+=update
+            time_marks = g* beta *(np.exp(-time_taken/(max_time*modval)))
+            if val>0:
+              update=correct_marks+ time_marks
+            else:
+              update=correct_marks- time_marks
+            level+=update
 
-    if level < 0.0:
-        level=0.0
-    elif level >= 4.99:
-        level=4.99
-
+        if level < 0.0:
+            level=0.0
+        elif level >= 4.99:
+            level=4.99
         return level
 
